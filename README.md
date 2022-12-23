@@ -32,8 +32,8 @@ latexmk -output-directory=build -pdf -pdflatex="xelatex %O %S" paper.tex
 ## Branches
 The repository has three git branches:
 1. ``main`` - main branch without examples. This branch will not contain examples, but will contain additional files such as: README.md, LICENSE.md and etc.
-2. ``min_size`` - repository without additional files like README.md, LICENSE.md, and examples. You can use this branch for fork and future use as your main paper repository
-3. ``example`` - repository with example paper. This branch will contain examples, scripts, bibliography cite examples and etc.
+2. ``min_size`` - branch without additional files like README.md, LICENSE.md, and examples. You can use this branch for fork and future use as your main paper repository
+3. ``example`` - branch with example paper. This branch will contain examples, scripts, bibliography cite examples and etc.
 
 ## Install
 See how to install here: [INSTALL.md](./INSTALL.md)
