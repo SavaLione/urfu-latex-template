@@ -1,0 +1,294 @@
+%%% Проверка используемого TeX-движка %%%
+
+% определяем новый условный оператор (http://tex.stackexchange.com/a/47579)
+\newif\ifxetexorluatex
+\ifxetex
+    \xetexorluatextrue
+\else
+    \ifluatex
+        \xetexorluatextrue
+    \else
+        \xetexorluatexfalse
+    \fi
+\fi
+
+% Условие, проверяющее, что документ --- автореферат
+\newif\ifsynopsis
+
+% Для продвинутой проверки разных условий
+\usepackage{etoolbox}[2015/08/02]
+\providebool{presentation}
+
+% Позволяет убирать блоки текста (добавляет окружение comment и команду \excludecomment)
+\usepackage{comment}    
+
+%%% Поля и разметка страницы %%%
+
+% Для включения альбомных страниц
+\usepackage{pdflscape}
+
+% Для последующего задания полей
+\usepackage{geometry}
+
+%%% Математические пакеты %%%
+% Математические дополнения от AMS
+\usepackage{amsthm,amsmath,amscd}
+
+% Математические дополнения от AMS
+\usepackage{amsfonts,amssymb}
+
+% Добавляет окружение multlined
+\usepackage{mathtools}
+
+% Красивые дроби
+\usepackage{xfrac}
+\usepackage[
+    locale = DE,
+    list-separator       = {;\,},
+    list-final-separator = {;\,},
+    list-pair-separator  = {;\,},
+    list-units           = single,
+    range-units          = single,
+    range-phrase={\text{\ensuremath{-}}},
+    % красивые дроби могут не соответствовать ГОСТ
+    % quotient-mode        = fraction,
+    fraction-function    = \sfrac,
+    separate-uncertainty,
+    % Размерности SI
+    ]{siunitx}
+\sisetup{inter-unit-product = \ensuremath{{}\cdot{}}}
+
+% Кириллица в нумерации subequations
+% Для правильной работы требуется выполнение сразу после загрузки пакетов
+\patchcmd{\subequations}{\def\theequation{\theparentequation\alph{equation}}}
+{\def\theequation{\theparentequation\asbuk{equation}}}
+{\typeout{subequations patched}}{\typeout{subequations not patched}}
+
+%%%% Установки для размера шрифта 14 pt %%%%
+%% Формирование переменных и констант для сравнения (один раз для всех подключаемых файлов)%%
+%% должно располагаться до вызова пакета fontspec или polyglossia, потому что они сбивают его работу
+\newlength{\curtextsize}
+\newlength{\bigtextsize}
+\setlength{\bigtextsize}{13.9pt}
+
+\makeatletter
+
+% неплохо для отслеживания, но вызывает стопорение процесса, если документ компилируется без команды  -interaction=nonstopmode
+%\show\f@size
+
+\setlength{\curtextsize}{\f@size pt}
+\makeatother
+
+%%% Кодировки и шрифты %%%
+\ifxetexorluatex
+    \ifpresentation
+        % quick fix for polyglossia 1.50
+        \providecommand*\autodot{}
+    \fi
+    % https://tex.stackexchange.com/a/26295/104425
+    \PassOptionsToPackage{no-math}{fontspec}
+
+    % Поддержка многоязычности
+    % (fontspec подгружается автоматически)
+    \usepackage{polyglossia}[2014/05/21]
+\else
+   %%% Решение проблемы копирования текста в буфер кракозябрами
+    \ifnumequal{\value{usealtfont}}{0}{}{
+        \input glyphtounicode.tex
+        %from pdfx package
+        \input glyphtounicode-cmr.tex
+        \pdfgentounicode=1
+    }
+    % Улучшенный поиск русских слов в полученном pdf-файле
+    \usepackage{cmap}
+    \ifnumequal{\value{usealtfont}}{2}{}{
+        % Если стоит до fontenc, то переносы не впишутся в выделяемый текст при копировании его в буфер обмена
+        \defaulthyphenchar=127
+    }
+
+    % Поддержка русских букв
+    \usepackage{textcomp}
+    \usepackage[T1,T2A]{fontenc}                    
+
+    % Используется pscyr, при наличии
+    \ifnumequal{\value{usealtfont}}{1}{
+        % Подключение pscyr
+        \IfFileExists{pscyr.sty}{\usepackage{pscyr}}{}
+    }{}
+
+    % Кодировка utf8
+    \usepackage[utf8]{inputenc}[2014/04/30]   
+    
+    % Языки: русский, английский
+    \usepackage[english, russian]{babel}[2014/03/24]
+
+    % babel 3.40 fix
+    \makeatletter\AtBeginDocument{\let\@elt\relax}\makeatother
+    \ifnumequal{\value{usealtfont}}{2}{
+        % http://dxdy.ru/post1238763.html#p1238763
+        % Подключение русифицированных шрифтов XCharter
+        \usepackage[scaled=0.914]{XCharter}[2017/12/19]
+        \usepackage[charter, vvarbb, scaled=1.048]{newtxmath}[2017/12/14]
+        \ifpresentation
+        \else
+            \setDisplayskipStretch{-0.078}
+        \fi
+    }{}
+\fi
+
+%%% Оформление абзацев %%%
+\ifpresentation
+\else
+    % Красная строка после заголовков типа chapter
+    \indentafterchapter
+    \usepackage{indentfirst}
+\fi
+
+%%% Цвета %%%
+\ifpresentation
+\else
+    % Совместимо с tikz
+    \usepackage[dvipsnames, table, hyperref]{xcolor}
+\fi
+
+%%% Таблицы %%%
+
+% Длинные таблицы
+\usepackage{longtable,ltcaption}
+
+% Улучшенное форматирование таблиц
+\usepackage{multirow,makecell}
+
+% таблицы с автоматически подбирающейся шириной столбцов (tabu обязательно до hyperref вызывать)
+\usepackage{tabu, tabulary}
+
+% автоматический подгон ширины подписи таблицы
+\usepackage{threeparttable}
+
+%%% Общее форматирование
+
+% Поддержка переносоустойчивых подчёркиваний и зачёркиваний
+\usepackage{soulutf8}
+
+% Запятая в десятичных дробях
+\usepackage{icomma}
+
+%%% Оптимизация расстановки переносов и длины последней строки абзаца
+
+% проверка установленности пакета impnattypo
+\IfFileExists{impnattypo.sty}{
+    \ifluatex
+        % Черновик
+        \ifnumequal{\value{draft}}{1}
+        {
+            \usepackage[hyphenation, lastparline, nosingleletter, homeoarchy, rivers, draft]{impnattypo}
+        }{
+            % Чистовик
+            \usepackage[hyphenation, lastparline, nosingleletter]{impnattypo}
+        }
+    \else
+        \usepackage[hyphenation, lastparline]{impnattypo}
+    \fi
+}{}
+
+%% Векторная графика
+
+% Продвинутый пакет векторной графики
+\usepackage{tikz}
+
+% Для примера tikz рисунка
+\usetikzlibrary{chains}
+
+% Для примера tikz рисунка
+\usetikzlibrary{shapes.geometric}
+
+% Для примера tikz рисунка
+\usetikzlibrary{shapes.symbols}
+
+% Для примера tikz рисунка
+\usetikzlibrary{arrows}
+
+%%% Гиперссылки %%%
+\ifxetexorluatex
+    \let\CYRDZE\relax
+\fi
+\usepackage{hyperref}[2012/11/06]
+
+%%% Изображения %%%
+% Подключаем пакет работы с графикой
+\usepackage{graphicx}[2014/04/25]
+
+% Подписи рисунков и таблиц
+\usepackage{caption}
+
+% Подписи подрисунков и подтаблиц
+\usepackage{subcaption}
+
+% Добавление внешних pdf файлов
+\usepackage{pdfpages}
+
+%%% Счётчики %%%
+\usepackage{aliascnt}
+
+% Счётчик рисунков и таблиц
+\usepackage[figure,table]{totalcount}
+
+% Пакет создания счётчиков на основе последнего номера подсчитываемого элемента (может требовать дважды компилировать документ)
+\usepackage{totcount}
+
+% Счётчик страниц, совместимый с hyperref (ссылается на номер последней страницы)
+% Желательно ставить последним пакетом в преамбуле
+\usepackage{totpages}
+
+%%% Продвинутое управление групповыми ссылками (пока только формулами) %%%
+\ifpresentation
+\else
+    % cleveref имеет сложности со считыванием языка из babel.
+    % Такое решение русификации вывода выбрано вместо определения в documentclass из опасности что-то лишнее передать во все остальные пакеты, включая библиографию.
+    \usepackage[russian]{cleveref}
+
+    % Добавление возможности использования пробелов в \labelcref
+    % https://tex.stackexchange.com/a/340502/104425
+    \usepackage{kvsetkeys}
+    \makeatletter
+    \let\org@@cref\@cref
+    \renewcommand*{\@cref}[2]{%
+        \edef\process@me{%
+            \noexpand\org@@cref{#1}{\zap@space#2 \@empty}%
+        }\process@me
+    }
+    \makeatother
+\fi
+
+% для \FloatBarrier
+\usepackage{placeins}
+
+% Черновик
+\ifnumequal{\value{draft}}{1}{
+    \usepackage[firstpage]{draftwatermark}
+    \SetWatermarkText{DRAFT}
+    \SetWatermarkFontSize{14pt}
+    \SetWatermarkScale{15}
+    \SetWatermarkAngle{45}
+}{}
+
+%%% Цитата, не приводимая в автореферате:
+
+% возможно, актуальна только для biblatex
+%\newcommand{\citeinsynopsis}[1]{\ifsynopsis\else ~\cite{#1} \fi}
+
+% если текущий процесс запущен библиотекой tikz-external, то прекомпиляция должна быть включена
+\ifdefined\tikzexternalrealjob
+    \setcounter{imgprecompile}{1}
+\fi
+
+% Только если у нас включена предкомпиляция
+\ifnumequal{\value{imgprecompile}}{1}{
+    % подключение возможности предкомпиляции
+    \usetikzlibrary{external}
+    % activate! % здесь можно указать отдельную папку для скомпилированных файлов
+    \tikzexternalize[prefix=images/cache/,optimize command away=\includepdf]
+    \ifxetex
+        \tikzset{external/up to date check={diff}}
+    \fi
+}{}

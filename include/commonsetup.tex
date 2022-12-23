@@ -1,0 +1,78 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Файл упрощённых настроек шаблона, общих для диссертации и автореферата %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Режим черновика %%%
+\makeatletter
+\@ifundefined{c@draft}{
+    \newcounter{draft}
+    % 0 --- чистовик (максимальное соблюдение ГОСТ)
+    % 1 --- черновик (отклонения от ГОСТ, но быстрая сборка итоговых PDF)
+    \setcounter{draft}{0}
+}{}
+\makeatother
+
+%%% Пометки в тексте %%%
+\makeatletter
+\@ifundefined{c@showmarkup}{
+    \newcounter{showmarkup}
+    % 0 --- скрыть пометки
+    % 1 --- показывать пометки
+    \setcounter{showmarkup}{0}
+}{}
+\makeatother
+
+%%% Использование в pdflatex шрифтов не по-умолчанию %%%
+\makeatletter
+\@ifundefined{c@usealtfont}{
+    \newcounter{usealtfont}
+    % 0 --- шрифты на базе Computer Modern
+    % 1 --- использовать пакет pscyr, при его наличии
+    % 2 --- использовать пакет XCharter, при наличии подходящей версии
+    \setcounter{usealtfont}{1}
+}{}
+\makeatother
+
+%%% Использование в xelatex и lualatex семейств шрифтов %%%
+\makeatletter
+\@ifundefined{c@fontfamily}{
+    \newcounter{fontfamily}
+    % 0 --- CMU семейство. Используется как fallback;
+    % 1 --- Шрифты от MS (Times New Roman и компания)
+    % 2 --- Семейство Liberation
+    \setcounter{fontfamily}{1}
+}{}
+\makeatother
+
+%%% Библиография %%%
+\makeatletter
+\@ifundefined{c@bibliosel}{
+    \newcounter{bibliosel}
+    % 0 --- встроенная реализация с загрузкой файла через движок bibtex8;
+    % 1 --- реализация пакетом biblatex через движок biber
+    \setcounter{bibliosel}{1}
+}{}
+\makeatother
+
+%%% Вывод типов ссылок в библиографии %%%
+\makeatletter
+\@ifundefined{c@mediadisplay}{
+    \newcounter{mediadisplay}
+    % 0 --- не делать ничего; надписи [Текст] и [Эл. ресурс] будут выводиться только в ссылках с заполненным полем `media`;
+    % 1 --- автоматически добавлять надпись [Текст] к ссылкам с незаполненным полем `media`; таким образом, у всех источников будет указан тип, что соответствует требованиям ГОСТ
+    % 2 --- автоматически удалять надписи [Текст], [Эл. Ресурс] и др.; не соответствует ГОСТ
+    % 3 --- автоматически удалять надпись [Текст]; не соответствует ГОСТ
+    % 4 --- автоматически удалять надпись [Эл. Ресурс]; не соответствует ГОСТ
+    \setcounter{mediadisplay}{0}
+}{}
+\makeatother
+
+%%% Предкомпиляция tikz рисунков для ускорения работы %%%
+\makeatletter
+\@ifundefined{c@imgprecompile}{
+    \newcounter{imgprecompile}
+    % 0 --- без предкомпиляции;
+    % 1 --- пользоваться предварительно скомпилированными pdf вместо генерации заново из tikz
+    \setcounter{imgprecompile}{0}
+}{}
+\makeatother

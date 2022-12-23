@@ -1,0 +1,119 @@
+% Paper
+%% Uncomment the following line if you want a recommendation about deprecated and not recommended TeX packages
+\RequirePackage[l2tabu,orthodox]{nag}
+
+%% Format A4, 14pt
+%%  GOST (State Standard System) (ГОСТ Р 7.0.11-2011, 5.3.6)
+\documentclass[a4paper,14pt,oneside,openany]{memoir}
+
+%% General template settings
+\input{include/commonsetup.tex}
+\input{include/urfulatextemplate.tex}
+
+%% General packages
+\input{include/packages.tex}
+
+%% It isn't synopsis
+\synopsisfalse{}
+
+%% Paper (dissert) packages
+\input{include/dispackages.tex}
+
+%% User specific packages
+\input{include/userpackages.tex}
+
+%% Simple template settings
+\input{include/dissertationsetup.tex}
+
+%% New variables for the whole project
+\input{include/newnames.tex}
+
+%% General information
+\input{src/variables.tex}
+
+%% Font definition
+\input{include/fonts.tex}
+
+%% General styles
+\input{include/styles.tex}
+
+%% Paper (dissert) styles
+\input{include/disstyles.tex}
+
+%% User specific styles
+\input{include/userstyles.tex}
+
+% Bibliography
+%% Selecting a bibliography engine
+\ifnumequal{\value{bibliosel}}{0}{%
+    % Built-in implementation with file upload via bibtex8 engine
+    \input{include/predefined.tex}
+}{
+    % biblatex package implementation via biber engine
+    \input{include/biblatex.tex}
+}
+
+% Log
+%% Display information about the selected options in the build log
+\typeout{Selected options:}
+\typeout{Draft mode: \arabic{draft}}
+\typeout{Font: \arabic{fontfamily}}
+\typeout{AltFont: \arabic{usealtfont}}
+\typeout{Bibliography backend: \arabic{bibliosel}}
+\typeout{Precompile images: \arabic{imgprecompile}}
+
+%% Display version information of used libraries
+\listfiles
+
+% Managing the compilation of individual parts of the dissertation
+
+%% You need a compiled document, thus all intermediate files are available
+%% Then you can use \includeonly command to show some parts
+%% Examples below:
+%
+% \includeonly{Dissertation/part2}
+% \includeonly{Dissertation/contents,Dissertation/appendix,Dissertation/conclusion}
+%
+%% If the commands above are commented out, then the document will be shown in full in pdf
+
+% The paper
+\begin{document}
+
+%% Redefining common section names
+%% https://tex.stackexchange.com/a/156050
+%% For polyglossia and babel
+\gappto\captionsrussian{\input{include/renames.tex}\unskip}
+\input{include/renames.tex}
+
+%% The paper structure
+\input{src/structure.tex}
+
+%% Chapter counting
+\setcounter{totalchapter}{\value{chapter}}
+
+%% Appendix settings
+\appendix
+
+%% Style as in GOST (State Standard System)
+%% The design of appendix headers is closer to GOST (State Standard System)
+%
+% \setlength{\midchapskip}{20pt}
+% \renewcommand*{\afterchapternum}{\par\nobreak\vskip \midchapskip}
+%
+
+%% Appendix numbering in Russian letters
+%
+% \renewcommand\thechapter{\Asbuk{chapter}}
+%
+
+%% Appendix
+%
+% \include{include/dissertation/appendix}        
+%
+
+%% Appendix counter
+%
+% \setcounter{totalappendix}{\value{chapter}}
+%
+
+\end{document}

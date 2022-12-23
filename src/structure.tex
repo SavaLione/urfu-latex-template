@@ -1,0 +1,33 @@
+% Paper structure
+%% Title page
+\input{src/main/title_pdf.tex}
+
+%% Abstract
+\input{src/main/abstract.tex}
+
+%% New page after abstract page
+\newpage
+
+%% Table of contents
+\input{include/contents.tex}
+\ifnumequal{\value{contnumfig}}{1}{}{\counterwithout{figure}{chapter}}
+\ifnumequal{\value{contnumtab}}{1}{}{\counterwithout{table}{chapter}}
+
+%% Dictionary
+\input{src/main/dictionary.tex}
+
+%% Introduction
+\input{src/main/introduction.tex}
+\ifnumequal{\value{contnumfig}}{1}{\counterwithout{figure}{chapter}
+}{\counterwithin{figure}{chapter}}
+\ifnumequal{\value{contnumtab}}{1}{\counterwithout{table}{chapter}
+}{\counterwithin{table}{chapter}}
+
+%% Main text
+\input{src/main/main.tex}
+
+%% Conclusion
+\input{src/main/conclusion.tex}
+
+%% References
+\input{include/references.tex}

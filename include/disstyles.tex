@@ -1,0 +1,363 @@
+%%% Переопределение именований, если иначе не сработает %%%
+%\gappto\captionsrussian{
+%    \renewcommand{\chaptername}{Глава}
+%    (ГОСТ Р 7.0.11-2011, 5.7)
+%    \renewcommand{\appendixname}{Приложение}
+%}
+
+%%% Изображения %%%
+
+% Пути к изображениям
+\graphicspath{{images/}{src/images/}}
+
+%%% Интервалы %%%
+%% По ГОСТ Р 7.0.11-2011, пункту 5.3.6 требуется полуторный интервал
+%% Реализация средствами класса (на основе setspace) ближе к типографской классике.
+%% И правит сразу и в таблицах (если со звёздочкой)
+
+% Двойной интервал
+%\DoubleSpacing*
+
+% Полуторный интервал
+\OnehalfSpacing*
+
+% Полуторный интервал, подобный Ворду (возможно, стоит включать вместе с предыдущей строкой)
+%\setSpacing{1.42}
+
+%%% Макет страницы %%%
+
+% Выставляем значения полей (ГОСТ 7.0.11-2011, 5.3.7)
+%\geometry{a4paper, top=2cm, bottom=2cm, left=2.5cm, right=1cm, nofoot, nomarginpar} %, heightrounded, showframe
+
+
+% Значения полей для ВКР
+\geometry{a4paper, top=2cm, bottom=2cm, left=3cm, right=1.5cm, nofoot, nomarginpar}
+
+% Размер дополнительного верхнего поля
+\setlength{\topskip}{0pt}
+
+% снимет warning, согласно https://tex.stackexchange.com/a/334346
+%\setlength{\footskip}{12.3pt}
+\setlength{\footskip}{12.3pt}
+
+%%% Выравнивание и переносы %%%
+%% http://tex.stackexchange.com/questions/241343/what-is-the-meaning-of-fussy-sloppy-emergencystretch-tolerance-hbadness
+%% http://www.latex-community.org/forum/viewtopic.php?p=70342#p70342
+\tolerance 1414
+\hbadness 1414
+% В случае проблем регулировать в первую очередь
+\emergencystretch 1.5em
+\hfuzz 0.3pt
+\vfuzz \hfuzz
+\raggedbottom
+
+% Избавляемся от переполнений
+%\sloppy
+
+% Запрещаем разрыв страницы после первой строки абзаца
+\clubpenalty=10000
+
+% Запрещаем разрыв страницы после последней строки абзаца
+\widowpenalty=10000
+
+% Ограничение на разрыв страницы, если строка заканчивается переносом
+\brokenpenalty=4991
+
+%%% Блок управления параметрами для выравнивания заголовков в тексте %%%
+\newlength{\otstuplen}
+\setlength{\otstuplen}{\theotstup\parindent}
+
+% выравнивание заголовков в тексте
+\ifnumequal{\value{headingalign}}{0}{
+    % по центру
+    \newcommand{\hdngalign}{\centering}
+
+    % по центру
+    \newcommand{\hdngaligni}{}
+    \setlength{\otstuplen}{0pt}
+}{
+    % по левому краю
+    \newcommand{\hdngalign}{}
+
+    % по левому краю
+    \newcommand{\hdngaligni}{\hspace{\otstuplen}}
+
+    % Отступ SAVALIONE
+    \setlength{\otstuplen}{2.5em}
+}
+% В обоих случаях вроде бы без переноса, как и надо (ГОСТ Р 7.0.11-2011, 5.3.5)
+
+%%% Оглавление %%%
+
+% отбивка точками до номера страницы начала главы/раздела
+\renewcommand{\cftchapterdotsep}{\cftdotsep}
+
+%% Переносить слова в заголовке не допускается (ГОСТ Р 7.0.11-2011, 5.3.5)
+%% Заголовки в оглавлении должны точно повторять заголовки в тексте (ГОСТ Р 7.0.11-2011, 5.2.3)
+%% Прямого указания на запрет переносов в оглавлении нет, но по той же логике невнесения искажений в смысл, лучше в оглавлении не переносить:
+
+%To have the (sectional) titles in the ToC, etc., typeset ragged right with no hyphenation
+\setrmarg{2.55em plus1fil}
+
+% нежирные номера страниц у глав в оглавлении
+\renewcommand{\cftchapterpagefont}{\normalfont}
+
+% нежирные точки до номеров страниц у глав в оглавлении
+\renewcommand{\cftchapterleader}{\cftdotfill{\cftchapterdotsep}}
+
+% нежирные названия глав в оглавлении
+\renewcommand{\cftchapterfont}{}
+
+\ifnumgreater{\value{headingdelim}}{0}{%
+    % добавляет точку с пробелом после номера раздела в оглавлении
+    \renewcommand\cftchapteraftersnum{.\space}
+}{}
+\ifnumgreater{\value{headingdelim}}{1}{%
+    % добавляет точку с пробелом после номера подраздела в оглавлении
+    \renewcommand\cftsectionaftersnum{.\space}
+
+    % добавляет точку с пробелом после номера подподраздела в оглавлении
+    \renewcommand\cftsubsectionaftersnum{.\space}
+
+    % добавляет точку с пробелом после номера подподподраздела в оглавлении
+    \renewcommand\cftsubsubsectionaftersnum{.\space}
+
+    % без этого polyglossia сама всё переопределяет
+    \AfterEndPreamble{%
+        \setsecnumformat{\csname the#1\endcsname.\space}
+    }
+}{%
+    % без этого polyglossia сама всё переопределяет
+    % \AfterEndPreamble{%
+    %     \setsecnumformat{\csname the#1\endcsname\quad}
+    % }
+
+    % без этого polyglossia сама всё переопределяет  % SAVALIONE
+    \AfterEndPreamble{%
+        % Пробел после номера главы, раздела, подраздела % SAVALIONE
+        \setsecnumformat{\csname the#1\endcsname\space}
+    }% SAVALIONE
+}
+
+%% Оглавление % SAVALIONE
+
+% Отступы в оглавлении
+\renewcommand*{\cftchaptername}{\hspace{0em}}
+
+% Отступы в оглавлении
+%\setlength{\cftsectionindent}{0.5em}            
+
+% Отступы в оглавлении
+%\setlength{\cftsubsectionindent}{0.5em}         
+
+%\cftsetindents{section}{0.5em}{0.5em}
+
+% Отступы в главах
+% без этого polyglossia сама всё переопределяет
+%\AfterEndPreamble{%
+%    \setsecnumformat{\csname the#1\endcsname\space}
+%}
+
+% Отступы в оглавлении
+%\renewcommand*{\cftsubsubsectionindent}{\hspace{0em}}   
+
+% Отступы в оглавлении (Раздел)
+\setlength{\cftsectionindent}{1em}
+
+% Отступы в оглавлении (Под раздел)
+\setlength{\cftsubsectionindent}{2.5em}
+
+% Отступы в оглавлении (Под под раздел)
+\setlength{\cftsubsubsectionindent}{4em}
+
+% Оглавление. Отступ в один пробел после главы
+%\renewcommand\cftchapteraftersnum{\quad}               
+
+% Оглавление. Отступ в один пробел после раздела
+%\renewcommand\cftsectionaftersnum{\quad}               
+
+% Оглавление. Отступ в один пробел после под раздела
+%\renewcommand\cftsubsectionaftersnum{\quad}            
+
+% Оглавление. Отступ в один пробел после под под раздела
+%\renewcommand\cftsubsubsectionaftersnum{\quad}         
+
+% Оглавление. Отступ после номера главы
+\setlength{\cftchapternumwidth}{1em}
+
+% Оглавление. Отступ после номера раздела
+\setlength{\cftsectionnumwidth}{2em}
+
+% Оглавление. Отступ после номера под раздела
+\setlength{\cftsubsectionnumwidth}{3em}
+
+% Оглавление. Отступ после номера под под раздела
+\setlength{\cftsubsubsectionnumwidth}{4em}
+
+%% Оглавление % SAVALIONE % END
+
+% Слово Приложение в оглавлении
+\renewcommand*{\cftappendixname}{\appendixname\space}
+
+%%% Колонтитулы %%%
+% Порядковый номер страницы печатают на середине верхнего поля страницы (ГОСТ Р 7.0.11-2011, 5.3.8)
+% \makeevenhead{plain}{}{\thepage}{}
+% \makeoddhead{plain}{}{\thepage}{}
+% \makeevenfoot{plain}{}{}{}
+% \makeoddfoot{plain}{}{}{}
+% \pagestyle{plain}
+% Порядковый номер страницы печатаем на середине нижнего поля страницы
+\makeevenhead{plain}{}{}{}
+\makeoddhead{plain}{}{}{}
+\makeevenfoot{plain}{}{\thepage}{}
+\makeoddfoot{plain}{}{\thepage}{}
+\pagestyle{plain}
+
+%%% добавить Стр. над номерами страниц в оглавлении
+%%% http://tex.stackexchange.com/a/306950
+%%%% Оригинал
+\newif\ifendTOC
+
+\newcommand*{\tocheader}{
+    \ifnumequal{\value{pgnum}}{1}{%
+        \ifendTOC\else\hbox to \linewidth%
+            {\noindent{}~\hfill{Стр.}}\par%
+            \ifnumless{\value{page}}{3}{}{%
+                \vspace{0.5\onelineskip}
+            }
+            \afterpage{\tocheader}
+        \fi%
+    }{}%
+}%
+
+%%% Оформление заголовков глав, разделов, подразделов %%%
+%% Работа должна быть выполнена ... размером шрифта 12-14 пунктов (ГОСТ Р 7.0.11-2011, 5.3.8)
+%% То есть не должно быть надписей шрифтом более 14. Так и поставим.
+%% Эти установки будут давать одинаковый результат независимо от выбора базовым шрифтом 12 пт или 14 пт
+\newcommand{\basegostsectionfont}{\fontsize{14pt}{16pt}\selectfont\bfseries}
+
+\makechapterstyle{thesisgost}{%
+    \chapterstyle{default}
+    \setlength{\beforechapskip}{0pt}
+    \setlength{\midchapskip}{0pt}
+    %\setlength{\afterchapskip}{\theintvl\curtextsize}
+    \setlength{\afterchapskip}{\curtextsize} % SAVALIONE
+    \renewcommand*{\chapnamefont}{\basegostsectionfont}
+    \renewcommand*{\chapnumfont}{\basegostsectionfont}
+    \renewcommand*{\chaptitlefont}{\basegostsectionfont}
+    \renewcommand*{\chapterheadstart}{}
+    \ifnumgreater{\value{headingdelim}}{0}{%
+        % добавляет точку с пробелом после номера раздела
+        \renewcommand*{\afterchapternum}{.\space}
+    }{%
+        % добавляет \quad после номера раздела
+        % \renewcommand*{\afterchapternum}{\quad}           
+
+        % добавляет \space после номера главы SAVALIONE
+        \renewcommand*{\afterchapternum}{\space}
+
+        % добавляет \space после номера раздела SAVALIONE
+        % \renewcommand*{\aftersectionnum}{\space}            
+
+        % добавляет \space после номера под раздела SAVALIONE
+        % \renewcommand*{\aftersubsectionnum}{\space}         
+
+        % добавляет \space после номера под под раздела SAVALIONE
+        % \renewcommand*{\aftersubsubsectionnum}{\space}      
+    }
+    \renewcommand*{\printchapternum}{\hdngaligni\hdngalign\chapnumfont \thechapter}
+    \renewcommand*{\printchaptername}{}
+    \renewcommand*{\printchapternonum}{\hdngaligni\hdngalign}
+}
+
+\makeatletter
+\makechapterstyle{thesisgostchapname}{%
+    \chapterstyle{thesisgost}
+    \renewcommand*{\printchapternum}{\chapnumfont \thechapter}
+    \renewcommand*{\printchaptername}{\hdngaligni\hdngalign\chapnamefont \@chapapp} %
+}
+\makeatother
+
+\chapterstyle{thesisgost}
+
+\setsecheadstyle{\basegostsectionfont\hdngalign}
+\setsecindent{\otstuplen}
+
+\setsubsecheadstyle{\basegostsectionfont\hdngalign}
+\setsubsecindent{\otstuplen}
+
+\setsubsubsecheadstyle{\basegostsectionfont\hdngalign}
+\setsubsubsecindent{\otstuplen}
+
+% все заголовки подразделов центрируются с учетом номера, как block
+\sethangfrom{\noindent #1}
+
+\ifnumequal{\value{chapstyle}}{1}{%
+    \chapterstyle{thesisgostchapname}
+
+    % будет вписано слово Глава перед каждым номером раздела в оглавлении
+    \renewcommand*{\cftchaptername}{\chaptername\space}
+}{}%
+
+%%% Интервалы между заголовками
+% Заголовки отделяют от текста сверху и снизу тремя интервалами (ГОСТ Р 7.0.11-2011, 5.3.5).
+%\setbeforesecskip{\theintvl\curtextsize}
+%\setaftersecskip{\theintvl\curtextsize}
+%\setbeforesubsecskip{\theintvl\curtextsize}
+%\setaftersubsecskip{\theintvl\curtextsize}
+%\setbeforesubsubsecskip{\theintvl\curtextsize}
+%\setaftersubsubsecskip{\theintvl\curtextsize}
+%%
+\setbeforesecskip{\curtextsize}
+\setaftersecskip{\curtextsize}
+\setbeforesubsecskip{\curtextsize}
+\setaftersubsecskip{\curtextsize}
+\setbeforesubsubsecskip{\curtextsize}
+\setaftersubsubsecskip{\curtextsize}
+
+%%% Вертикальные интервалы глав (\chapter) в оглавлении как и у заголовков
+% раскомментировать следующие 2
+% \setlength{\cftbeforechapterskip}{0pt plus 0pt}   % ИЛИ эти 2 строки из учебника
+% \renewcommand*{\insertchapterspace}{}
+% или эту
+\renewcommand*{\cftbeforechapterskip}{0em}
+
+
+%%% Блок дополнительного управления размерами заголовков
+% Пропорциональные заголовки и базовый шрифт 14 пт
+\ifnumequal{\value{headingsize}}{1}{%
+    \renewcommand{\basegostsectionfont}{\large\bfseries}
+    \renewcommand*{\chapnamefont}{\Large\bfseries}
+    \renewcommand*{\chapnumfont}{\Large\bfseries}
+    \renewcommand*{\chaptitlefont}{\Large\bfseries}
+}{}
+
+%%% Счётчики %%%
+
+%% Упрощённые настройки шаблона диссертации: нумерация формул, таблиц, рисунков
+\ifnumequal{\value{contnumeq}}{1}{%
+    % Убираем связанность номера формулы с номером главы/раздела
+    \counterwithout{equation}{chapter}
+}{}
+\ifnumequal{\value{contnumfig}}{1}{%
+    % Убираем связанность номера рисунка с номером главы/раздела
+    \counterwithout{figure}{chapter}
+}{}
+\ifnumequal{\value{contnumtab}}{1}{%
+    % Убираем связанность номера таблицы с номером главы/раздела
+    \counterwithout{table}{chapter}
+}{}
+
+\AfterEndPreamble{
+    %% регистрируем счётчики в системе totcounter
+
+    \regtotcounter{totalcount@figure}
+
+    % Если иным способом поставить в преамбуле то ошибка в числе таблиц
+    \regtotcounter{totalcount@table}
+
+    % Если иным способом поставить в преамбуле то ошибка в числе страниц
+    \regtotcounter{TotPages}
+    \newtotcounter{totalappendix}
+    \newtotcounter{totalchapter}
+}

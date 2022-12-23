@@ -1,0 +1,16 @@
+# LaTeX auto generated files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.nlo
+*.out
+*.toc
+
+# Build directory
+build/
+
+# Visual Studio Code
+.vscode/

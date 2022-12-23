@@ -1,0 +1,66 @@
+%%% Реализация библиографии встроенными средствами посредством движка bibtex8 %%%
+
+%%% Пакеты %%%
+% Красивые ссылки на литературу
+\usepackage{cite}
+
+
+%%% Стили %%%
+% Оформляем библиографию по ГОСТ 7.1 (ГОСТ Р 7.0.11-2011, 5.6.7)
+\bibliographystyle{BibTeX-Styles/utf8gost71u}
+
+\makeatletter
+% Заменяем библиографию с квадратных скобок на точку
+\renewcommand{\@biblabel}[1]{#1.}
+\makeatother
+%% Управление отступами между записями
+%% требует etoolbox
+%% http://tex.stackexchange.com/a/105642
+%\patchcmd\thebibliography
+% {\labelsep}
+% {\labelsep\itemsep=5pt\parsep=0pt\relax}
+% {}
+% {\typeout{Couldn't patch the command}}
+
+%%% Список литературы с красной строки (без висячего отступа) %%%
+%\patchcmd{\thebibliography} %может потребовать включения пакета etoolbox
+%  {\advance\leftmargin\labelsep}
+%  {\leftmargin=0pt%
+%   \setlength{\labelsep}{\widthof{\ }}% Управляет длиной отступа после точки
+%   \itemindent=\parindent%
+%   \addtolength{\itemindent}{\labelwidth}% Сдвигаем правее на величину номера с точкой
+%   \advance\itemindent\labelsep%
+%  }
+%  {}{}
+
+%%% Цитирование %%%
+% Разделение ; при перечислении ссылок (ГОСТ Р 7.0.5-2008)
+\renewcommand\citepunct{;\penalty\citepunctpenalty%
+    \hskip.13emplus.1emminus.1em\relax}
+
+% Чтобы примеры цитирования, рассчитанные на biblatex, не вызывали ошибок при компиляции в bibtex
+\newcommand*{\autocite}[1]{}
+
+%%% Создание команд для вывода списка литературы %%%
+\newcommand*{\insertbibliofull}{
+    % Подключаем BibTeX-базы % После запятых не должно быть лишних пробелов — он "думает", что это тоже имя пути
+    \bibliography{src/bibliography/external,src/bibliography/author}
+}
+
+\newcommand*{\insertbiblioauthor}{
+    % Подключаем BibTeX-базы % После запятых не должно быть лишних пробелов — он "думает", что это тоже имя пути
+    \bibliography{src/bibliography/author}
+}
+
+\newcommand*{\insertbiblioexternal}{
+    % Подключаем BibTeX-базы
+    \bibliography{src/bibliography/external}
+}
+
+
+%% Счётчик использованных ссылок на литературу, обрабатывающий с учётом неоднократных ссылок
+%% Требуется дважды компилировать, поскольку ему нужно считать актуальный внешний файл со списком литературы
+\newtotcounter{citenum}
+\def\oldcite{}
+\let\oldcite=\bibcite
+\def\bibcite{\stepcounter{citenum}\oldcite}

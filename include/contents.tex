@@ -1,0 +1,11 @@
+% Оглавление (ГОСТ Р 7.0.11-2011, 5.2)
+
+% Добавляем его в оглавление
+% \addcontentsline{toc}{chapter}{ОГЛАВЛЕНИЕ}
+
+% не рекомендуется применять пакет микротипографики к автоматически генерируемому оглавлению
+\ifdefmacro{\microtypesetup}{\microtypesetup{protrusion=false}}{}
+\tableofcontents*
+\addtocontents{toc}{\protect\tocheader}
+\endTOCtrue
+\ifdefmacro{\microtypesetup}{\microtypesetup{protrusion=true}}{}
