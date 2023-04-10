@@ -47,10 +47,16 @@
 % 1 --- сквозная нумерация по всей диссертации
 \setcounter{contnumtab}{1}
 
+%% Оглавление %%
 % 0 --- номера страниц никак не обозначены;
 % 1 --- Стр. над номерами страниц (дважды компилировать после изменения настройки) до какого уровня подразделов выносить в оглавление до какого уровня нумеровать подразделы
-%% Оглавление %%
 \setcounter{pgnum}{0}
+
+% До какого уровня подразделов выносить в оглавление
+\settocdepth{subsection}
+
+% До какого уровня нумеровать подразделы
+\setsecnumdepth{subsection}
 
 %% Текст и форматирование заголовков %%
 
@@ -119,16 +125,20 @@
 \newcommand{\splitformattext}{\raggedright}
 
 %% Подпись рисунков %%
-%Разделитель записи «Рисунок #» и названия рисунка
+% Разделитель записи «Рисунок #» и названия рисунка
 % (ГОСТ 2.105, 4.3.1)
 % "--- здесь не работает
 \newcommand{\figlabelsep}{~\cyrdash\ }
 
 %%% Цвета гиперссылок %%%
 % Latex color definitions: http://latexcolor.com/
+
+% Default
 %\definecolor{linkcolor}{rgb}{0.9,0,0}
 %\definecolor{citecolor}{rgb}{0,0.6,0}
 %\definecolor{urlcolor}{rgb}{0,0,1}
+
+% Black
 \definecolor{linkcolor}{rgb}{0,0,0}
 \definecolor{citecolor}{rgb}{0,0,0}
 \definecolor{urlcolor}{rgb}{0,0,0}

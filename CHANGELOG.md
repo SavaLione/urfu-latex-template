@@ -1,4 +1,5 @@
 - Changed line break (``CRLF`` -> ``LF``)
+- Fixed accidentally removed lines in ``./include/dissertationsetup.tex``
 
 1.0.0 - 2022-12-23
 ------------------
